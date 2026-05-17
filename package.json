@@ -2,14 +2,30 @@
   "name": "markdown-toolbar-shortcuts",
   "displayName": "Markdown Toolbar & Shortcuts",
   "description": "Formatting toolbar, keyboard shortcuts, and utilities for Markdown files",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "publisher": "holetuananh",
   "icon": "images/icon.png",
   "engines": {
     "vscode": "^1.85.0"
   },
   "categories": [
-    "Other"
+    "Formatters",
+    "Keymaps"
+  ],
+  "keywords": [
+    "markdown",
+    "markdown toolbar",
+    "markdown shortcuts",
+    "markdown formatting",
+    "markdown editor",
+    "bold",
+    "italic",
+    "link",
+    "heading",
+    "list",
+    "table",
+    "keyboard shortcuts",
+    "productivity"
   ],
   "repository": "https://github.com/holetuananh/markdown-toolbar",
   "activationEvents": [],

@@ -1,6 +1,6 @@
-# Markdown Toolbar
+# Markdown Toolbar & Shortcuts
 
-A VS Code extension that adds a formatting toolbar, keyboard shortcuts, and utilities for Markdown files.
+Markdown Toolbar & Shortcuts is a VS Code extension that adds a formatting toolbar, keyboard shortcuts, and utilities for Markdown files.
 
 ## Features
 
