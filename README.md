@@ -1,33 +1,66 @@
 # Markdown Toolbar & Shortcuts
 
-Markdown Toolbar & Shortcuts is a VS Code extension that adds a formatting toolbar, keyboard shortcuts, and utilities for Markdown files.
+Markdown Toolbar & Shortcuts adds fast Markdown formatting actions to VS Code with a title-bar toolbar, keyboard shortcuts, and a cleaner right-click menu.
+
+![Toolbar screenshot 1](images/toolbar-screenshot-1.png)
+*Toolbar actions in a Markdown editor.*
+
+![Toolbar screenshot 2](images/toolbar-screenshot-2.png)
+*Additional toolbar and formatting workflow view.*
+
+![Context menu screenshot](images/context-menu-screenshot.png)
+*Minimal main context menu with the expanded `More` submenu.*
 
 ## Features
 
-- **Toolbar buttons** in the editor title bar (visible only for `.md` files)
-- **Editor context menu** entries for `Bold`, `Italic`, and `Link`
-- **Keyboard shortcuts** with direct shortcuts for `Bold`, `Italic`, and `Link`, plus `Ctrl+M` chord sequences for the full command set
-- **Toggle behavior**: applying a format to already-formatted text removes it
-- **Line-based commands**: headings, quotes, and lists apply to every selected line
-- **Multi-cursor support** for inline formatting
-- **Section number updater**: auto-numbers H1–H3 headings hierarchically
+- Editor title toolbar for common Markdown formatting actions.
+- Minimal right-click context menu with `Bold`, `Italic`, `Link`, and `More`.
+- Expanded `More` submenu for headings, lists, math, tables, code blocks, and utilities.
+- Keyboard shortcut support for direct formatting and `Ctrl+M` command chords.
+- Toggle-aware inline formatting, line-based transforms, and section number updates.
+- Dedicated utilities to renumber section headings and ordered lists.
+
+## Context Menu
+
+The main right-click menu stays intentionally short:
+
+- Bold
+- Italic
+- Link
+- More
+
+The `More` submenu includes:
+
+- Open Codex Sidebar
+- Strikethrough
+- Inline Code
+- Link
+- Image
+- Heading 1
+- Heading 2
+- Heading 3
+- Quote
+- Unordered List
+- Ordered List
+- Task List (Unchecked)
+- Task List (Checked)
+- Code Block
+- Table
+- Inline Math
+- Block Math
+- Horizontal Rule
+- Update Section Numbers
+- Update List Numbers
 
 ## Keyboard Shortcuts
 
-All shortcuts only activate when editing a Markdown file.
-
-### Direct Shortcuts
+All shortcuts are active only while editing Markdown files.
 
 | Shortcut | Command |
-|---|---|
+| --- | --- |
 | `Ctrl+B` | Bold |
 | `Ctrl+I` | Italic |
 | `Ctrl+K` | Link |
-
-### `Ctrl+M` Chords
-
-| Shortcut | Command |
-|---|---|
 | `Ctrl+M Ctrl+B` | Bold |
 | `Ctrl+M Ctrl+I` | Italic |
 | `Ctrl+M Ctrl+C` | Inline Code |
@@ -48,23 +81,25 @@ All shortcuts only activate when editing a Markdown file.
 | `Ctrl+M Ctrl+T` | Table |
 | `Ctrl+M Ctrl+H` | Horizontal Rule |
 | `Ctrl+M Ctrl+N` | Update Section Numbers |
+| `Ctrl+M Ctrl+Shift+N` | Update List Numbers |
 | `Ctrl+M Ctrl+P` | Preview to Side |
 
 ## Behavior
 
-- **Selection present**: wraps or transforms the selected text; applying again toggles it off
-- **No selection**: inserts a placeholder with the cursor/tab stop positioned for immediate typing
-- **Line commands** (headings, quote, lists): apply to every line touched by the selection
-- **Link/Image with multi-line selections**: converts each non-empty line separately
-- **Code Block / Block Math with a selection**: wraps the selection in fenced blocks
-- **Table / Horizontal Rule**: inserts at the cursor and starts on a new line if the current line already has content
+- Inline commands wrap selected text and toggle off when the selection is already formatted.
+- Line-based commands apply to each selected line.
+- `Update Section Numbers` renumbers H1-H3 headings for the current selection, or for the whole file when nothing is selected.
+- `Update List Numbers` renumbers ordered lists for the current selection, or for the whole file when nothing is selected.
+- Fenced code blocks are preserved during section renumbering.
 
-## Development
+## Release Notes
 
-```bash
-npm install
-npm run compile   # one-time build
-npm run watch     # rebuild on save
-```
+### v1.1.0
 
-Press `F5` in VS Code to launch the Extension Development Host for testing.
+- Added the `More` submenu to the editor context menu.
+- Improved command organization and Marketplace presentation.
+- Updated screenshots and icon assets.
+- Fixed section numbering for selections and whole-document updates.
+- Added ordered-list renumbering for selections and whole-document updates.
+
+See [CHANGELOG.md](CHANGELOG.md) for the full release history.

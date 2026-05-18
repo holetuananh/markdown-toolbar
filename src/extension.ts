@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { LineRange, renumberMarkdownHeadings, renumberMarkdownOrderedLists } from './sectionNumbering';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -301,48 +302,77 @@ function insertHorizontalRule(editor: vscode.TextEditor): void {
 
 // ── Section Number Updater ───────────────────────────────────────────────────
 
+function getSectionNumberingRanges(editor: vscode.TextEditor): LineRange[] | undefined {
+    const nonEmptySelections = editor.selections.filter(selection => !selection.isEmpty);
+    if (nonEmptySelections.length === 0) {
+        return undefined;
+    }
+
+    return nonEmptySelections.map(selection => ({
+        startLine: selection.start.line,
+        endLine:
+            selection.end.character === 0 && selection.end.line > selection.start.line
+                ? selection.end.line - 1
+                : selection.end.line
+    }));
+}
+
+function getDocumentRange(document: vscode.TextDocument): vscode.Range {
+    const lastLine = document.lineCount - 1;
+    return new vscode.Range(
+        new vscode.Position(0, 0),
+        document.lineAt(lastLine).range.end
+    );
+}
+
 function updateSectionNumbers(editor: vscode.TextEditor): void {
     const doc = editor.document;
-    // Matches H1–H3, optionally with an existing section number like "1.2 "
-    const headingPattern = /^(#{1,3})\s+(?:\d+(?:\.\d+)*\.?\s+)?(.+)$/;
-    const counters = [0, 0, 0];
+    const ranges = getSectionNumberingRanges(editor);
+    const updatedText = renumberMarkdownHeadings(doc.getText(), ranges);
+
+    if (updatedText === doc.getText()) {
+        return;
+    }
 
     editor.edit(eb => {
-        for (let i = 0; i < doc.lineCount; i++) {
-            const line = doc.lineAt(i);
-            const match = line.text.match(headingPattern);
-            if (!match) { continue; }
+        eb.replace(getDocumentRange(doc), updatedText);
+    });
+}
 
-            const level = match[1].length;
-            const content = match[2];
+function updateListNumbers(editor: vscode.TextEditor): void {
+    const doc = editor.document;
+    const ranges = getSectionNumberingRanges(editor);
+    const updatedText = renumberMarkdownOrderedLists(doc.getText(), ranges);
 
-            if (level === 1) {
-                counters[0]++;
-                counters[1] = 0;
-                counters[2] = 0;
-                eb.replace(line.range, `# ${counters[0]} ${content}`);
-            } else if (level === 2) {
-                counters[1]++;
-                counters[2] = 0;
-                eb.replace(line.range, `## ${counters[0]}.${counters[1]} ${content}`);
-            } else {
-                counters[2]++;
-                eb.replace(line.range, `### ${counters[0]}.${counters[1]}.${counters[2]} ${content}`);
-            }
-        }
+    if (updatedText === doc.getText()) {
+        return;
+    }
+
+    editor.edit(eb => {
+        eb.replace(getDocumentRange(doc), updatedText);
     });
 }
 
 // ── activate ─────────────────────────────────────────────────────────────────
 
 export function activate(context: vscode.ExtensionContext): void {
-    const reg = (id: string, fn: () => void) =>
+    const reg = (id: string, fn: () => void | Thenable<void>) =>
         context.subscriptions.push(vscode.commands.registerCommand(id, fn));
 
     const getEditor = (): vscode.TextEditor | undefined => {
         const e = vscode.window.activeTextEditor;
         return e && e.document.languageId === 'markdown' ? e : undefined;
     };
+
+    reg('markdownToolbar.openCodexSidebar', async () => {
+        try {
+            await vscode.commands.executeCommand('chatgpt.openSidebar');
+        } catch {
+            void vscode.window.showWarningMessage(
+                'Open Codex Sidebar requires the Codex extension from OpenAI to be installed and enabled.'
+            );
+        }
+    });
 
     // Inline formatting
     reg('markdownToolbar.bold', () => {
@@ -410,6 +440,9 @@ export function activate(context: vscode.ExtensionContext): void {
     // Utility
     reg('markdownToolbar.updateSectionNumbers', () => {
         const e = getEditor(); if (e) { updateSectionNumbers(e); }
+    });
+    reg('markdownToolbar.updateListNumbers', () => {
+        const e = getEditor(); if (e) { updateListNumbers(e); }
     });
 }
 
